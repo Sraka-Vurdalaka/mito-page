@@ -62,6 +62,7 @@ function updateCountUp() {
         countdownElement.textContent = countValue;
         countValue++;
         setTimeout(updateCountUp, 10); // Вызываем функцию каждые 10 мс
+
     }
 }
 
@@ -71,6 +72,7 @@ let waves = document.querySelector('.waves');
 let pinkCheckbox = document.querySelector('.pink-checkbox');
 let text = document.querySelector('.text-checkbox div');
 let percentBlock = document.querySelector('.percent-block');
+
 
 textCheckbox.addEventListener('click', () => {
     waves.classList.toggle('waves-disactive');
@@ -95,8 +97,8 @@ textCheckbox.addEventListener('click', () => {
     }
 });
 
-// модалка с видео
 
+// модалка с видео начало
 let modalVideo = document.querySelector('.modal-video');
 let videoClose = document.querySelector('.video-close');
 let videoElement = document.querySelector('.modal-video video');
@@ -121,6 +123,61 @@ videoClose.addEventListener('click', () => {
     videoElement.pause();
     videoElement.currentTime = 0;
 });
+// модалка с видео конец
 
+// анимация при скролле страницы начало
+let animItems = document.querySelectorAll('.anim-items');
 
+if (animItems.length > 0) {
+    window.addEventListener('scroll', animOnScroll)
+    function animOnScroll() {
+        for (let i = 0; i < animItems.length; i++) {
+            let animItem = animItems[i];
+            let animItemHeight = animItem.offsetHeight;
+            let animItemOffset = offset(animItem).top;
+            let animStart = 1000;
 
+            let animItemPoint = window.innerHeight - animItemHeight / animStart;
+            if (animItemHeight > window.innerHeight) {
+                animItemPoint = window.innerHeight - window.innerHeight / animStart;
+            }
+
+            if ((window.scrollY > animItemOffset - animItemPoint) && window.scrollY < (animItemOffset + animItemHeight)) {
+                animItem.classList.add('active');
+                pinkCheckbox.classList.add('pink-checkbox-active');
+                pinkCheckbox.classList.remove('pink-checkbox-disactive');
+                percentBlock.classList.remove('percent-block-disactive');
+                percentBlock.classList.add('percent-block-active');
+                text.innerHTML = `С поддержкой митохондрий`;
+                countValue = countDownMin;
+
+            } else {
+                animItem.classList.remove('active');
+                pinkCheckbox.classList.add('pink-checkbox-disactive');
+                pinkCheckbox.classList.remove('pink-checkbox-active');
+                percentBlock.classList.add('percent-block-disactive');
+                percentBlock.classList.remove('percent-block-active');
+                text.innerHTML = `Без поддержки митохондрий`;
+                countValue = countDownMax;
+
+                if (!animItem.classList.contains('anim-no-hide')) {
+
+                }
+                //а если мы хотим чтоб анимация сохранялась при скролле вверх и вниз, то оставляем просто
+                //else { animItem.classList.remove('active'); }
+            }
+        }
+    }
+    function offset(elem) {
+        let rect = elem.getBoundingClientRect();
+        let scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+        let scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+        return {
+            top: rect.top + scrollTop,
+            left: rect.left + scrollLeft
+        }
+    }
+    animOnScroll();
+}
+// анимация при скролле страницы конец
